@@ -6,7 +6,7 @@ services:
       dockerfile: docker/Dockerfile.cpu
     image: faster-whisper-server:cpu
     ports:
-      - "${PORT:-8000}:8000"
+      - "${PORT:-9000}:9000"
     environment:
       WHISPER_MODEL: ${WHISPER_MODEL:-large-v3}
       WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
@@ -23,7 +23,7 @@ services:
       dockerfile: docker/Dockerfile.gpu
     image: faster-whisper-server:gpu
     ports:
-      - "${PORT:-8000}:8000"
+      - "${PORT:-9000}:9000"
     environment:
       WHISPER_MODEL: ${WHISPER_MODEL:-large-v3}
       WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-float16}

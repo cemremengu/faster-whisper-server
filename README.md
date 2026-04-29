@@ -29,7 +29,7 @@ docker compose --profile gpu up --build
 ```bash
 curl -F file=@sample.wav \
      -F response_format=verbose_json \
-     http://localhost:8000/v1/audio/transcriptions
+     http://localhost:9000/v1/audio/transcriptions
 ```
 
 ### Use with the OpenAI Python SDK
@@ -37,7 +37,7 @@ curl -F file=@sample.wav \
 ```python
 from openai import OpenAI
 
-client = OpenAI(base_url="http://localhost:8000/v1", api_key="unused")
+client = OpenAI(base_url="http://localhost:9000/v1", api_key="unused")
 with open("sample.wav", "rb") as f:
     print(client.audio.transcriptions.create(model="large-v3", file=f).text)
 ```
@@ -56,7 +56,7 @@ All settings are environment variables (also accepted with the `WHISPER_` prefix
 | `WHISPER_DOWNLOAD_ROOT` | unset | Override download dir; otherwise `HF_HOME` is used. |
 | `HF_HOME` | `/data` (in image) | HF cache root. Mount this as a volume to persist downloads. |
 | `HF_HUB_OFFLINE` | unset | Set to `1` to forbid network calls (useful after the cache is warmed). |
-| `PORT` | `8000` | Host port published by Compose. |
+| `PORT` | `9000` | Host port published by Compose. |
 
 Override per-run, e.g.:
 
