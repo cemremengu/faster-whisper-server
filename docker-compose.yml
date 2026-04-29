@@ -1,0 +1,43 @@
+services:
+  server-cpu:
+    profiles: ["cpu"]
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+    image: faster-whisper-server:cpu
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      WHISPER_MODEL: ${WHISPER_MODEL:-large-v3}
+      WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      WHISPER_CPU_THREADS: ${WHISPER_CPU_THREADS:-0}
+      WHISPER_NUM_WORKERS: ${WHISPER_NUM_WORKERS:-1}
+    volumes:
+      - hf-cache:/data
+    restart: unless-stopped
+
+  server-gpu:
+    profiles: ["gpu"]
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gpu
+    image: faster-whisper-server:gpu
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      WHISPER_MODEL: ${WHISPER_MODEL:-large-v3}
+      WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-float16}
+      WHISPER_NUM_WORKERS: ${WHISPER_NUM_WORKERS:-1}
+    volumes:
+      - hf-cache:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
+    restart: unless-stopped
+
+volumes:
+  hf-cache: {}

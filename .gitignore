@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Local Hugging Face model cache (when bind-mounting instead of named volume)
+hf-cache/
+
+.claude/
+.vscode/
+
