@@ -65,7 +65,9 @@ async def healthz(request: Request):
 async def list_models():
     return {
         "object": "list",
-        "data": [{"id": settings.model, "object": "model", "owned_by": "faster-whisper"}],
+        "data": [
+            {"id": settings.model, "object": "model", "owned_by": "faster-whisper"}
+        ],
     }
 
 
@@ -78,9 +80,14 @@ async def transcriptions(
     prompt: Optional[str] = Form(None),
     response_format: str = Form("json"),
     temperature: float = Form(0.0),
-    timestamp_granularities: list[str] | None = Form(default=None, alias="timestamp_granularities[]"),
+    timestamp_granularities: list[str] | None = Form(
+        default=None, alias="timestamp_granularities[]"
+    ),
 ):
-    if not getattr(request.app.state, "ready", False) or request.app.state.model is None:
+    if (
+        not getattr(request.app.state, "ready", False)
+        or request.app.state.model is None
+    ):
         raise HTTPException(status_code=503, detail="model not ready")
 
     if response_format not in VALID_RESPONSE_FORMATS:
@@ -91,7 +98,9 @@ async def transcriptions(
 
     if model and model != settings.model:
         logger.warning(
-            "Client requested model=%r but server is serving %r; ignoring.", model, settings.model
+            "Client requested model=%r but server is serving %r; ignoring.",
+            model,
+            settings.model,
         )
 
     granularities = set(timestamp_granularities or [])

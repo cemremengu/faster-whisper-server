@@ -53,7 +53,12 @@ def _segment_to_dict(seg, include_words: bool) -> dict:
     }
     if include_words and seg.words:
         out["words"] = [
-            {"word": w.word, "start": w.start, "end": w.end, "probability": w.probability}
+            {
+                "word": w.word,
+                "start": w.start,
+                "end": w.end,
+                "probability": w.probability,
+            }
             for w in seg.words
         ]
     return out
@@ -72,7 +77,9 @@ def format_response(
     if response_format == "text":
         return PlainTextResponse(full_text + "\n")
     if response_format == "srt":
-        return PlainTextResponse(_segments_to_srt(segments), media_type="application/x-subrip")
+        return PlainTextResponse(
+            _segments_to_srt(segments), media_type="application/x-subrip"
+        )
     if response_format == "vtt":
         return PlainTextResponse(_segments_to_vtt(segments), media_type="text/vtt")
     if response_format == "verbose_json":
@@ -85,7 +92,12 @@ def format_response(
         }
         if include_words:
             payload["words"] = [
-                {"word": w.word, "start": w.start, "end": w.end, "probability": w.probability}
+                {
+                    "word": w.word,
+                    "start": w.start,
+                    "end": w.end,
+                    "probability": w.probability,
+                }
                 for s in segments
                 if s.words
                 for w in s.words

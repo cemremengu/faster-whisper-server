@@ -8,7 +8,9 @@ Device = Literal["auto", "cpu", "cuda"]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="WHISPER_", env_file=None, extra="ignore")
+    model_config = SettingsConfigDict(
+        env_prefix="WHISPER_", env_file=None, extra="ignore"
+    )
 
     model: str = "large-v3"
     device: Device = "auto"
