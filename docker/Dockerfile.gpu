@@ -1,37 +1,34 @@
 FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04 AS base
 
 ENV PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_BREAK_SYSTEM_PACKAGES=1 \
     DEBIAN_FRONTEND=noninteractive \
     HF_HOME=/data \
     WHISPER_DEVICE=cuda \
-    WHISPER_COMPUTE_TYPE=float16
+    WHISPER_COMPUTE_TYPE=float16 \
+    UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_INSTALL_DIR=/opt/uv-python \
+    UV_PROJECT_ENVIRONMENT=/opt/venv \
+    PATH=/opt/venv/bin:$PATH
 
 WORKDIR /app
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-        software-properties-common \
         ca-certificates \
         curl \
         libgomp1 \
- && add-apt-repository -y ppa:deadsnakes/ppa \
- && apt-get update \
- && apt-get install -y --no-install-recommends \
-        python3.12 \
-        python3.12-venv \
-        python3-pip \
- && rm -rf /var/lib/apt/lists/* \
- && ln -sf /usr/bin/python3.12 /usr/local/bin/python \
- && ln -sf /usr/bin/python3.12 /usr/local/bin/python3
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 COPY pyproject.toml README.md ./
+COPY .python-version ./
 COPY app ./app
 
-RUN python -m pip install --upgrade pip \
- && python -m pip install .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv python install \
+ && uv sync --no-dev --no-editable
 
 RUN mkdir -p /data
 VOLUME ["/data"]
