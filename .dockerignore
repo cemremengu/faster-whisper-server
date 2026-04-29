@@ -1,7 +1,6 @@
 .git
 .gitignore
 .venv
-.python-version
 __pycache__
 *.py[oc]
 *.egg-info
